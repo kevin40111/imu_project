@@ -7,6 +7,7 @@ Generate 3D render using serial data from IMU
 'use strict';
 
 // Declare required variables
+
 var dataRollx = 0;
 var dataRolly = 0;
 var dataRollz = 0;
@@ -24,38 +25,37 @@ var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
 //Connect to socket.io
-var serverIP = "localhost";
-var socket = io.connect(serverIP + ':5000');
 
-console.log('socket connected to: ' + serverIP);
+var socket = io('http://localhost:5000');
+console.log(socket)
+
+socket.on('serial_update', function(data) {
+    console.log(data);
+    if (data.charAt(0) === 'O') {
+        console.log(data);
+       
+        var dataArray = data.split(/ /);
+
+        // set x
+        dataRollx = (dataArray[1] *= orderOfMag).toFixed(accuracy);
+        
+        // set y
+        dataRolly = (dataArray[2] *= orderOfMag).toFixed(accuracy);
+
+        // set z
+        dataRollz = (dataArray[3] *= orderOfMag).toFixed(accuracy);
+
+        console.log(dataRollx + "," + dataRolly + "," + dataRollz);
+    }
+});
+
+socket.on('error', function(socket){
+    console.log(socket);
+}); 
 
 // Start reading IMU data
-runSocket();
 init();
 animate(); 
-
-function runSocket() {
-        console.log('da')
-        socket.on('serial_update', function(data) {
-            console.log(data)
-            if (data.charAt(0) === 'O') {
-                console.log(data);
-               
-                var dataArray = data.split(/ /);
-
-                // set x
-                dataRollx = (dataArray[1] *= orderOfMag).toFixed(accuracy);
-                
-                // set y
-                dataRolly = (dataArray[2] *= orderOfMag).toFixed(accuracy);
-
-                // set z
-                dataRollz = (dataArray[3] *= orderOfMag).toFixed(accuracy);
-
-                console.log(dataRollx + "," + dataRolly + "," + dataRollz);
-            }
-        });
-}
 
 function init() {
 
