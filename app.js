@@ -3,46 +3,37 @@ var url= require('url');
 var fs = require('fs');
 var os = require('os');
 var io = require('socket.io').listen(app);
-var serialport = require("serialport");
-var SP = serialport.SerialPort;
-var serialPort = new SP("COM4",
-	{
-		baudrate: 115200,
-		parser: serialport.parsers.readline("\n")
-	}, false);
+var sp  = require("serialport");
+var Readline = require('@serialport/parser-readline');
 
-app.listen(5000);
-
-/* SERIAL WORK */
-
-serialPort.open(function (error) {
-  if ( error ) {
-    console.log('failed to open: '+error);
-  } else {
-    console.log('open');
-    serialPort.on('data', function(data) {
-      console.log('data received: ' + data);
-      io.sockets.emit('serial_update', data);
-    });
-    //serialPort.write("ls\n", function(err, results) {
-    //  console.log('err ' + err);
-    //  console.log('results ' + results);
-    //});
-  }
+var serialPort = new sp("COM3",
+{
+  baudRate: 115200
 });
 
+const parser = serialPort.pipe(new Readline({ delimiter: '\n' }));
+
+parser.on('data', data =>{
+  var emit = io.sockets.emit('serial_update', data);
+});
+
+// open errors will be emitted as an error event
+serialPort.on('error', function(err) {
+  console.log('Error: ', err.message);
+})
+
+app.listen(5000);
+/* SERIAL WORK */
 
 // Http handler function
 function handler (req, res) {
-    
     // Using URL to parse the requested URL
     var path = url.parse(req.url).pathname;
     
     // Managing the root route
     if (path == '/') {
         index = fs.readFile(__dirname+'/three.html', 
-            function(error,data) {
-                
+            function(error, data) {
                 if (error) {
                     res.writeHead(500);
                     return res.end("Error: unable to load three.html");

@@ -26,17 +26,21 @@ var windowHalfY = window.innerHeight / 2;
 //Connect to socket.io
 var serverIP = "localhost";
 var socket = io.connect(serverIP + ':5000');
+
 console.log('socket connected to: ' + serverIP);
 
 // Start reading IMU data
 runSocket();
 init();
-animate();
+animate(); 
 
 function runSocket() {
+        console.log('da')
         socket.on('serial_update', function(data) {
+            console.log(data)
             if (data.charAt(0) === 'O') {
                 console.log(data);
+               
                 var dataArray = data.split(/ /);
 
                 // set x
