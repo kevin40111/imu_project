@@ -15,17 +15,13 @@ var serialPort = new sp("COM3",
 
 const parser = serialPort.pipe(new Readline({ delimiter: '\r\n' }))
 parser.on('data', function(data) {
-    console.log(data);
-    io.sockets.emit('serial_update', {form: data});
+    io.sockets.emit('serial_update', {value: data});
   });
 
 
 serialPort.on('error', function(err) {
   console.log('Error: ', err.message);
 })
-
-
-/* SERIAL WORK */
 
 // Http handler function
 function handler (req, res) {

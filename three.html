@@ -19,7 +19,8 @@
         
         <script src="/socket.io/socket.io.js"></script>
         <script>
-         var dataRollx = 0;
+        
+        var dataRollx = 0;
         var dataRolly = 0;
         var dataRollz = 0;
         var dataRollxArray = [];
@@ -41,13 +42,12 @@
         console.log(socket)
 
         socket.on('serial_update', function(data) {
-        
-        console.log(data);
-        
+                console.log(data.value);
+                dataRollx = data.value;
         });
 
         socket.on('error', function(socket){
-        console.log(socket);
+                console.log(socket);
         }); 
 
         // Start reading IMU data
@@ -100,9 +100,6 @@
 
         var material = new THREE.MeshBasicMaterial( { color: 0xe0e0e0, overdraw: 0.5 } );
 
-        plane = new THREE.Mesh( geometry, material );
-        scene.add( plane );
-
         renderer = new THREE.CanvasRenderer();
         renderer.setClearColor( 0xf0f0f0 );
         renderer.setSize( window.innerWidth, window.innerHeight );
@@ -127,9 +124,7 @@
         }
 
         function render() {
-        cube.rotation.x = -dataRollx;
-        cube.rotation.y = -dataRollz;
-        cube.rotation.z = -dataRolly;
+        cube.rotation.x += dataRollx/100
         renderer.render( scene, camera );
         }
                 

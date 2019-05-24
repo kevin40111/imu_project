@@ -27,26 +27,10 @@ var windowHalfY = window.innerHeight / 2;
 //Connect to socket.io
 
 var socket = io('http://localhost:5000');
-console.log(socket)
 
 socket.on('serial_update', function(data) {
-    console.log(data);
-    if (data.charAt(0) === 'O') {
-        console.log(data);
-       
-        var dataArray = data.split(/ /);
-
-        // set x
-        dataRollx = (dataArray[1] *= orderOfMag).toFixed(accuracy);
-        
-        // set y
-        dataRolly = (dataArray[2] *= orderOfMag).toFixed(accuracy);
-
-        // set z
-        dataRollz = (dataArray[3] *= orderOfMag).toFixed(accuracy);
-
-        console.log(dataRollx + "," + dataRolly + "," + dataRollz);
-    }
+    console.log('x');
+    dataRollx = data.value;
 });
 
 socket.on('error', function(socket){
@@ -130,8 +114,6 @@ function animate() {
 }
 
 function render() {
-    cube.rotation.x = -dataRollx;
-    cube.rotation.y = -dataRollz;
-    cube.rotation.z = -dataRolly;
+    cube.rotation.x += dataRollx/100;
     renderer.render( scene, camera );
 }
