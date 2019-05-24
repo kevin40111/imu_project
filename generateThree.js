@@ -81,15 +81,6 @@ function init() {
     cube.position.y = 150;
     scene.add( cube );
 
-    // Create background plane
-    var geometry = new THREE.PlaneBufferGeometry( 400, 200 );
-    geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
-
-    var material = new THREE.MeshBasicMaterial( { color: 0xe0e0e0, overdraw: 0.5 } );
-
-    plane = new THREE.Mesh( geometry, material );
-    scene.add( plane );
-
     renderer = new THREE.CanvasRenderer();
     renderer.setClearColor( 0xf0f0f0 );
     renderer.setSize( window.innerWidth, window.innerHeight );
